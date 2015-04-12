@@ -190,7 +190,7 @@ if __name__ == '__main__':
     parser.add_argument('files', nargs='*', metavar='file', help='image files')
     parser.add_argument(
         '-p', '--pallete',
-        choices=PALLETES.keys(),
+        choices=sorted(PALLETES.keys()),
         action='append',
         help='pallete(s) to use',
     ),
