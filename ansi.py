@@ -97,10 +97,8 @@ def img_to_ansi(filename, max_size, alpha, palletes):
                 ansi = img.getpixel((x, y))
                 yield ansi_pixel(ansi)
             yield '\033[m\n'
-        img.close()
         return
     else:
-        img.close()
         raise Exception('Weird image bands: {0}'.format(bands))
 
     for pallete in palletes:
@@ -110,8 +108,6 @@ def img_to_ansi(filename, max_size, alpha, palletes):
                 rgb = tuple(pixels[x][y])
                 yield ansi_pixel(RGB_TO_ANSI[rgb])
             yield '\033[m\n'
-
-    img.close()
 
 def colorcubes():
     """
