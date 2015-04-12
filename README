@@ -1,0 +1,18 @@
+usage: ansi [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
+            [-p {greyscale,bw,256,16}] [--width WIDTH]
+            [file [file ...]]
+
+Images in B/W, Greyscale, 16 and 256 ANSI colors, delivered to STDOUT
+
+positional arguments:
+  file                  image files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --alpha ALPHA         alpha value for RGBA images (0-255, default 0)
+  --ansi [COLOR [COLOR ...]]
+                        info for ANSI color (0-255)
+  --colors              color cubes
+  -p {greyscale,bw,256,16}, --pallete {greyscale,bw,256,16}
+                        pallete(s) to use
+  --width WIDTH         default is terminal width (80)
