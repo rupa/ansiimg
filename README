@@ -2,8 +2,8 @@ usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
                [-p {16,216,256,bw,greyscale}] [--width WIDTH]
                [file [file ...]]
 
-Images in B/W, Greyscale, 16 and 256 ANSI colors, delivered to STDOUT. Demo:
-`curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
+Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
+Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
 
 positional arguments:
   file                  image files
