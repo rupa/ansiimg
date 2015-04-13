@@ -69,7 +69,7 @@ def quantize(img, palette):
     return palette[reshape(qnt, (height, width))]
 
 def ansi_pixel(ansi, close=False, text=False, nl=False):
-    return '\033[38;5;{0:02};48;5;{0:02}m  {1}{2}{3}{4}'.format(
+    return '\033[48;5;{0:02}m  {1}{2}{3}{4}'.format(
         ansi,
         '\033[m' if close is True else '',
         ' ' if text else '',
