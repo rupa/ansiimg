@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 """
-Images in B/W, Greyscale, 16 and 256 ANSI colors, delivered to STDOUT
+Images in B/W, Greyscale, 16 and 256 ANSI colors, delivered to STDOUT.
+
+Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
 """
 
 from itertools import product
@@ -192,6 +194,7 @@ if __name__ == '__main__':
     ),
     parser.add_argument(
         '--width',
+        type=int,
         default=terminal_size()[1],
         help='default is terminal width (%(default)s)'
     )
