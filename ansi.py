@@ -47,12 +47,14 @@ ANSI_TO_HEX = {
 PALLETE_BW = array(((0, 0, 0), (255, 255, 255)))
 PALLETE_16 = array(SYSTEM)
 PALLETE_GREYSCALE = array(GREYSCALE + [(0, 0, 0), (255, 255, 255)])
+PALLETE_216 = array(RGB)
 PALLETE_256 = array(SYSTEM + RGB + GREYSCALE)
 PALLETES = {
-    'bw': PALLETE_BW,
     '16': PALLETE_16,
-    'greyscale': PALLETE_GREYSCALE,
+    '216': PALLETE_216,
     '256': PALLETE_256,
+    'bw': PALLETE_BW,
+    'greyscale': PALLETE_GREYSCALE,
 }
 
 def quantize(img, palette):

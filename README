@@ -1,5 +1,5 @@
 usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
-               [-p {16,256,bw,greyscale}] [--width WIDTH]
+               [-p {16,216,256,bw,greyscale}] [--width WIDTH]
                [file [file ...]]
 
 Images in B/W, Greyscale, 16 and 256 ANSI colors, delivered to STDOUT. Demo:
@@ -14,6 +14,6 @@ optional arguments:
   --ansi [COLOR [COLOR ...]]
                         info for ANSI color (0-255)
   --colors              color cubes
-  -p {16,256,bw,greyscale}, --pallete {16,256,bw,greyscale}
+  -p {16,216,256,bw,greyscale}, --pallete {16,216,256,bw,greyscale}
                         pallete(s) to use
   --width WIDTH         default is terminal width (80)
