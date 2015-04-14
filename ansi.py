@@ -71,6 +71,10 @@ def quantize(img, palette):
     return palette[reshape(qnt, (height, width))]
 
 def ansi_pixel(ansi, close=False, text=False, nl=False):
+    if ansi is None:
+        if close is True:
+            return '\033[m\n'
+        return '\n'
     return '\033[48;5;{0:02}m  {1}{2}{3}{4}'.format(
         ansi,
         '\033[m' if close is True else '',
@@ -100,7 +104,7 @@ def img_to_ansi(filename, max_size, alpha, palletes):
             for x in xrange(width):
                 ansi = img.getpixel((x, y))
                 yield ansi_pixel(ansi)
-            yield '\033[m\n'
+            yield ansi_pixel(None, close=True)
         return
     else:
         raise Exception('Weird image bands: {0}'.format(bands))
@@ -111,7 +115,7 @@ def img_to_ansi(filename, max_size, alpha, palletes):
             for y in xrange(width):
                 rgb = tuple(pixels[x][y])
                 yield ansi_pixel(RGB_TO_ANSI[rgb])
-            yield '\033[m\n'
+            yield ansi_pixel(None, close=True)
 
 def colorcubes():
     """
@@ -119,14 +123,14 @@ def colorcubes():
     """
     for rgb in SYSTEM:
         yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
-    yield '\n'
+    yield ansi_pixel(None)
     for idx, rgb in enumerate(RGB):
         yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
         if (idx + 1) % 36 == 0:
-            yield '\n'
+            yield ansi_pixel(None)
     for rgb in GREYSCALE:
         yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
-    yield '\n'
+    yield ansi_pixel(None)
 
 def ansicubes(ansis):
     """
