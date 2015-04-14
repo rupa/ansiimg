@@ -83,6 +83,22 @@ def ansi_pixel(ansi, close=False, text=False, nl=False):
         '\n' if nl is True else ''
     )
 
+def html_pixel(ansi, close=False, text=False, nl=False):
+    """
+    Assumes monopace font. close is unused, for argument compatibility.
+    """
+    if ansi is None:
+        return '<br>\n'
+    return (
+        '<span style="background-color: #{0};">&nbsp;&nbsp;</span>{1}{2}{3}'
+        .format(
+            ''.join('{0:02x}'.format(i) for i in ANSI_TO_RGB[ansi]),
+            ' ' if text else '',
+            text if text else '',
+            '<br>\n' if nl is True else ''
+        )
+    )
+
 def img_to_ansi(filename, max_size, alpha, palletes):
 
     img = Image.open(filename)
