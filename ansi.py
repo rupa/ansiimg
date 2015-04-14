@@ -44,17 +44,18 @@ ANSI_TO_HEX = {
     for ansi in ANSI_TO_RGB
 }
 
-PALLETE_BW = array(((0, 0, 0), (255, 255, 255)))
-PALLETE_16 = array(SYSTEM)
-PALLETE_GREYSCALE = array(GREYSCALE + [(0, 0, 0), (255, 255, 255)])
-PALLETE_216 = array(RGB)
-PALLETE_256 = array(SYSTEM + RGB + GREYSCALE)
-PALLETES = {
-    '16': PALLETE_16,
-    '216': PALLETE_216,
-    '256': PALLETE_256,
-    'bw': PALLETE_BW,
-    'greyscale': PALLETE_GREYSCALE,
+PALETTE_BW = array(((0, 0, 0), (255, 255, 255)))
+PALETTE_16 = array(SYSTEM)
+PALETTE_GREYSCALE = array(GREYSCALE + [(0, 0, 0), (255, 255, 255)])
+PALETTE_216 = array(RGB)
+PALETTE_256 = array(SYSTEM + RGB + GREYSCALE)
+PALETTES = {
+    '16': PALETTE_16,
+    '216': PALETTE_216,
+    '256': PALETTE_256,
+    'bw': PALETTE_BW,
+    'greyscale': PALETTE_GREYSCALE,
+    'grayscale': PALETTE_GREYSCALE,
 }
 
 def quantize(img, palette):
@@ -99,7 +100,7 @@ def html_pixel(ansi, close=False, text=False, nl=False):
         )
     )
 
-def img_to_ansi(filename, max_size, alpha, palletes):
+def img_to_ansi(filename, max_size, alpha, palettes):
 
     img = Image.open(filename)
     img.thumbnail(max_size, Image.ANTIALIAS)
@@ -125,8 +126,8 @@ def img_to_ansi(filename, max_size, alpha, palletes):
     else:
         raise Exception('Weird image bands: {0}'.format(bands))
 
-    for pallete in palletes:
-        pixels = quantize(img, pallete)
+    for palette in palettes:
+        pixels = quantize(img, palette)
         for x in xrange(height):
             for y in xrange(width):
                 rgb = tuple(pixels[x][y])
@@ -162,12 +163,12 @@ def ansicubes(ansis):
             nl=True
         )
 
-def ansifiles(filenames, max_size, alpha, palletes):
+def ansifiles(filenames, max_size, alpha, palettes):
     """
     Pretty (image) files.
     """
     for filename in filenames:
-        for char in img_to_ansi(filename, max_size, alpha, palletes):
+        for char in img_to_ansi(filename, max_size, alpha, palettes):
             yield char
 
 if __name__ == '__main__':
@@ -209,10 +210,10 @@ if __name__ == '__main__':
     parser.add_argument('--colors', action='store_true', help='color cubes')
     parser.add_argument('files', nargs='*', metavar='file', help='image files')
     parser.add_argument(
-        '-p', '--pallete',
-        choices=sorted(PALLETES.keys()),
+        '-p', '--palette',
+        choices=sorted(PALETTES.keys()),
         action='append',
-        help='pallete(s) to use',
+        help='palette(s) to use',
     ),
     parser.add_argument(
         '--width',
@@ -222,10 +223,10 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    if args.pallete is None:
-        args.pallete = [PALLETE_256]
+    if args.palette is None:
+        args.palette = [PALETTE_256]
     else:
-        args.pallete = [PALLETES[x] for x in args.pallete]
+        args.palette = [PALETTES[x] for x in args.palette]
 
     if args.colors:
         for x in colorcubes():
@@ -236,7 +237,7 @@ if __name__ == '__main__':
     elif args.files:
         # divide width by 2 as each char is 2x1px, make height huge
         max_size = (args.width / 2, sys.maxint)
-        for x in ansifiles(args.files, max_size, args.alpha, args.pallete):
+        for x in ansifiles(args.files, max_size, args.alpha, args.palette):
             sys.stdout.write(x)
     else:
         parser.print_usage()
