@@ -44,8 +44,52 @@ ANSI_TO_HEX = {
     for ansi in ANSI_TO_RGB
 }
 
+# 16 color SYSTEM palette, in different order
+IRC = [                 # irssi
+    (0xff, 0xff, 0xff), # white
+    (0x00, 0x00, 0x00), # black
+    (0x00, 0x00, 0xff), # blue
+    (0x00, 0xff, 0x00), # green
+    (0x80, 0x00, 0x00), # light red
+    (0xff, 0x00, 0x00), # red
+    (0xff, 0x00, 0xff), # magenta (purple)
+    (0x80, 0x80, 0x00), # orange
+    (0xff, 0xff, 0x00), # yellow
+    (0x00, 0x80, 0x00), # light green
+    (0x00, 0xff, 0xff), # cyan
+    (0x00, 0x80, 0x80), # light cyan
+    (0x00, 0x00, 0x80), # light blue
+    (0x80, 0x00, 0x80), # light magenta
+    (0x80, 0x80, 0x80), # grey
+    (0xc0, 0xc0, 0xc0), # light grey
+
+]
+# RGB values from http://www.mirc.com/colors.html
+MIRC = [
+    (0xff, 0xff, 0xff),
+    (0x00, 0x00, 0x00),
+    (0x00, 0x00, 0x7f),
+    (0x00, 0x93, 0x00),
+    (0xff, 0x00, 0x00),
+    (0x7f, 0x00, 0x00),
+    (0x9c, 0x00, 0x9c),
+    (0xfc, 0x7f, 0x00),
+    (0xff, 0xff, 0x00),
+    (0x00, 0xfc, 0x00),
+    (0x00, 0x93, 0x93),
+    (0x00, 0xff, 0xff),
+    (0x00, 0x00, 0xfc),
+    (0xff, 0x00, 0xff),
+    (0x7f, 0x7f, 0x7f),
+    (0xd2, 0xd2, 0xd2),
+]
+RGB_TO_IRC = {rgb: i for i, rgb in enumerate(IRC)}
+RGB_TO_MIRC = {rgb: i for i, rgb in enumerate(MIRC)}
+
 PALETTE_BW = array(((0, 0, 0), (255, 255, 255)))
 PALETTE_16 = array(SYSTEM)
+PALETTE_IRC = array(IRC)
+PALETTE_MIRC = array(MIRC)
 PALETTE_GREYSCALE = array(GREYSCALE + [(0, 0, 0), (255, 255, 255)])
 PALETTE_216 = array(RGB)
 PALETTE_256 = array(SYSTEM + RGB + GREYSCALE)
@@ -56,6 +100,8 @@ PALETTES = {
     'bw': PALETTE_BW,
     'greyscale': PALETTE_GREYSCALE,
     'grayscale': PALETTE_GREYSCALE,
+    #'irc': PALETTE_IRC,
+    #'mirc': PALETTE_MIRC,
 }
 
 def quantize(img, palette):
@@ -99,6 +145,11 @@ def html_pixel(ansi, close=False, text=False, nl=False):
             '<br>\n' if nl is True else ''
         )
     )
+
+def irc_pixel(irc, close=False, text=False, nl=False):
+    if irc is None:
+        return '\n'
+    return '\x03{0:02},{0:02}  '.format(irc)
 
 def img_to_ansi(filename, max_size, alpha, palettes):
 
