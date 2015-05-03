@@ -104,19 +104,6 @@ PALETTES = {
     #'mirc': PALETTE_MIRC,
 }
 
-def quantize(img, palette):
-    """
-    Quantize an image with a given color palette. Channels must match.
-    """
-    img = array(img)
-    height, width, channels = img.shape
-    # reshape to array of points
-    pixels = reshape(img, (height * width, channels))
-    # quantize
-    qnt, _ = vq(pixels, palette)
-    # reshape back to image
-    return palette[reshape(qnt, (height, width))]
-
 def ansi_pixel(ansi, close=False, text=False, nl=False):
     if ansi is None:
         if close is True:
@@ -150,6 +137,19 @@ def irc_pixel(irc, close=False, text=False, nl=False):
     if irc is None:
         return '\n'
     return '\x03{0:02},{0:02}  '.format(irc)
+
+def quantize(img, palette):
+    """
+    Quantize an image with a given color palette. Channels must match.
+    """
+    img = array(img)
+    height, width, channels = img.shape
+    # reshape to array of points
+    pixels = reshape(img, (height * width, channels))
+    # quantize
+    qnt, _ = vq(pixels, palette)
+    # reshape back to image
+    return palette[reshape(qnt, (height, width))]
 
 def img_to_ansi(filename, max_size, alpha, palettes):
 
