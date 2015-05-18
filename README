@@ -1,5 +1,6 @@
 usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
-               [-p {16,216,256,bw,grayscale,greyscale}] [--width WIDTH]
+               [-o {ansi,html}] [-p {16,216,256,bw,grayscale,greyscale}]
+               [-t TEXT] [-w WIDTH]
                [file [file ...]]
 
 Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
@@ -14,6 +15,9 @@ optional arguments:
   --ansi [COLOR [COLOR ...]]
                         info for ANSI color (0-255)
   --colors              color cubes
+  -o {ansi,html}, --output {ansi,html}
   -p {16,216,256,bw,grayscale,greyscale}, --palette {16,216,256,bw,grayscale,greyscale}
                         palette(s) to use
-  --width WIDTH         default is terminal width (80)
+  -t TEXT, --text TEXT  (short) text to overlay
+  -w WIDTH, --width WIDTH
+                        default is terminal width (80)
