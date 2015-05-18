@@ -174,7 +174,7 @@ def prepare_img(filename, max_size, text=''):
 
     return img, width, height
 
-def img_to_ansi(filename, max_size, alpha, palettes, text=''):
+def img_to_ansi(filename, output, max_size, alpha, palettes, text=''):
     img, width, height = prepare_img(filename, max_size, text)
 
     bands = img.getbands()
@@ -191,8 +191,8 @@ def img_to_ansi(filename, max_size, alpha, palettes, text=''):
         for y in xrange(height):
             for x in xrange(width):
                 ansi = img.getpixel((x, y))
-                yield ansi_pixel(ansi)
-            yield ansi_pixel(None, close=True)
+                yield output(ansi)
+            yield output(None, close=True)
         return
     else:
         raise Exception('Weird image bands: {0}'.format(bands))
@@ -202,30 +202,30 @@ def img_to_ansi(filename, max_size, alpha, palettes, text=''):
         for x in xrange(height):
             for y in xrange(width):
                 rgb = tuple(pixels[x][y])
-                yield ansi_pixel(RGB_TO_ANSI[rgb])
-            yield ansi_pixel(None, close=True)
+                yield output(RGB_TO_ANSI[rgb])
+            yield output(None, close=True)
 
-def colorcubes():
+def colorcubes(output):
     """
     Pretty.
     """
     for rgb in SYSTEM:
-        yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
-    yield ansi_pixel(None)
+        yield output(RGB_TO_ANSI[rgb], close=True)
+    yield output(None)
     for idx, rgb in enumerate(RGB):
-        yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
+        yield output(RGB_TO_ANSI[rgb], close=True)
         if (idx + 1) % 36 == 0:
-            yield ansi_pixel(None)
+            yield output(None)
     for rgb in GREYSCALE:
-        yield ansi_pixel(RGB_TO_ANSI[rgb], close=True)
-    yield ansi_pixel(None)
+        yield output(RGB_TO_ANSI[rgb], close=True)
+    yield output(None)
 
-def ansicubes(ansis):
+def ansicubes(ansis, output):
     """
     Show colorcube and values.
     """
     for ansi in ansis:
-        yield ansi_pixel(
+        yield output(
             ansi,
             close=True,
             text='{0:02} {1} {2}'.format(
@@ -234,12 +234,14 @@ def ansicubes(ansis):
             nl=True
         )
 
-def ansifiles(filenames, max_size, alpha, palettes, text=''):
+def ansifiles(filenames, output, max_size, alpha, palettes, text=''):
     """
     Pretty (image) files.
     """
     for filename in filenames:
-        for char in img_to_ansi(filename, max_size, alpha, palettes, text):
+        for char in img_to_ansi(
+            filename, output, max_size, alpha, palettes, text
+        ):
             yield char
 
 if __name__ == '__main__':
@@ -264,6 +266,11 @@ if __name__ == '__main__':
             return int(arg)
         raise argparse.ArgumentTypeError('0-255 required')
 
+    outputs = {
+        'ansi': ansi_pixel,
+        'html': html_pixel,
+    }
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '--alpha',
@@ -279,7 +286,9 @@ if __name__ == '__main__':
         help='info for ANSI color (0-255)'
     )
     parser.add_argument('--colors', action='store_true', help='color cubes')
-    parser.add_argument('files', nargs='*', metavar='file', help='image files')
+    parser.add_argument(
+        '-o', '--output', default='ansi', choices=outputs.keys()
+    )
     parser.add_argument(
         '-p', '--palette',
         choices=sorted(PALETTES.keys()),
@@ -290,11 +299,12 @@ if __name__ == '__main__':
         '-t', '--text', default='', help='(short) text to overlay'
     )
     parser.add_argument(
-        '--width',
+        '-w', '--width',
         type=int,
         default=terminal_size()[1],
         help='default is terminal width (%(default)s)'
     )
+    parser.add_argument('files', nargs='*', metavar='file', help='image files')
     args = parser.parse_args()
 
     if args.palette is None:
@@ -302,17 +312,24 @@ if __name__ == '__main__':
     else:
         args.palette = [PALETTES[x] for x in args.palette]
 
+    output = outputs[args.output]
+
     if args.colors:
-        for x in colorcubes():
+        for x in colorcubes(output):
             sys.stdout.write(x)
     elif args.ansi:
-        for x in ansicubes(args.ansi):
+        for x in ansicubes(args.ansi, output):
             sys.stdout.write(x)
     elif args.files:
         # divide width by 2 as each char is 2x1px, make height huge
         max_size = (args.width / 2, sys.maxint)
         for x in ansifiles(
-            args.files, max_size, args.alpha, args.palette, args.text
+            args.files,
+            output,
+            max_size,
+            args.alpha,
+            args.palette,
+            args.text
         ):
             sys.stdout.write(x)
     else:
