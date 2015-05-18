@@ -6,9 +6,10 @@ Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
 """
 
 from itertools import product
+from textwrap import wrap
 
 from numpy import array, reshape
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 from scipy.cluster.vq import vq
 
 # 16 colors
@@ -151,11 +152,30 @@ def quantize(img, palette):
     # reshape back to image
     return palette[reshape(qnt, (height, width))]
 
-def img_to_ansi(filename, max_size, alpha, palettes):
-
+def prepare_img(filename, max_size, text=''):
+    """
+    Shrink image and/or add text
+    """
     img = Image.open(filename)
     img.thumbnail(max_size, Image.ANTIALIAS)
     width, height = img.size
+
+    draw = ImageDraw.Draw(img)
+    fontsize = int(width / 5.0) + 1
+    fontrgba = (0, 0, 0, 0)
+    para = wrap(text, width=8)
+    font = ImageFont.truetype('Impact.ttf', fontsize)
+
+    current_h, pad = 0, 0 # (height - 2 * fontsize)
+    for line in para:
+        w, h = draw.textsize(line, font=font)
+        draw.text(((width - w) / 2, current_h), line, fontrgba, font=font)
+        current_h += h + pad
+
+    return img, width, height
+
+def img_to_ansi(filename, max_size, alpha, palettes, text=''):
+    img, width, height = prepare_img(filename, max_size, text)
 
     bands = img.getbands()
     if bands == ('R', 'G', 'B'):
@@ -214,12 +234,12 @@ def ansicubes(ansis):
             nl=True
         )
 
-def ansifiles(filenames, max_size, alpha, palettes):
+def ansifiles(filenames, max_size, alpha, palettes, text=''):
     """
     Pretty (image) files.
     """
     for filename in filenames:
-        for char in img_to_ansi(filename, max_size, alpha, palettes):
+        for char in img_to_ansi(filename, max_size, alpha, palettes, text):
             yield char
 
 if __name__ == '__main__':
@@ -267,6 +287,9 @@ if __name__ == '__main__':
         help='palette(s) to use',
     ),
     parser.add_argument(
+        '-t', '--text', default='', help='(short) text to overlay'
+    )
+    parser.add_argument(
         '--width',
         type=int,
         default=terminal_size()[1],
@@ -288,7 +311,9 @@ if __name__ == '__main__':
     elif args.files:
         # divide width by 2 as each char is 2x1px, make height huge
         max_size = (args.width / 2, sys.maxint)
-        for x in ansifiles(args.files, max_size, args.alpha, args.palette):
+        for x in ansifiles(
+            args.files, max_size, args.alpha, args.palette, args.text
+        ):
             sys.stdout.write(x)
     else:
         parser.print_usage()
