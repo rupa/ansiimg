@@ -103,43 +103,48 @@ PALETTES = {
     'bw': PALETTE_BW,
     'greyscale': PALETTE_GREYSCALE,
     'grayscale': PALETTE_GREYSCALE,
-    #'irc': PALETTE_IRC,
-    #'mirc': PALETTE_MIRC,
+    'irc': PALETTE_IRC,
+    'mirc': PALETTE_MIRC,
 }
 
-def ansi_pixel(ansi, close=False, text=False, nl=False):
-    if ansi is None:
+def ansi_pixel(rgb, close=False, text=False, nl=False):
+    if rgb is None:
         if close is True:
             return '\033[m\n'
         return '\n'
     return '\033[48;5;{0:02}m  {1}{2}{3}{4}'.format(
-        ansi,
+        RGB_TO_ANSI[rgb],
         '\033[m' if close is True else '',
         ' ' if text else '',
         text if text else '',
         '\n' if nl is True else ''
     )
 
-def html_pixel(ansi, close=False, text=False, nl=False):
+def html_pixel(rgb, close=False, text=False, nl=False):
     """
     Assumes monopace font. close is unused, for argument compatibility.
     """
-    if ansi is None:
+    if rgb is None:
         return '<br>\n'
     return (
         '<span style="background-color: #{0};">&nbsp;&nbsp;</span>{1}{2}{3}'
         .format(
-            ''.join('{0:02x}'.format(i) for i in ANSI_TO_RGB[ansi]),
+            ''.join('{0:02x}'.format(i) for i in rgb),
             ' ' if text else '',
             text if text else '',
             '<br>\n' if nl is True else ''
         )
     )
 
-def irc_pixel(irc, close=False, text=False, nl=False):
-    if irc is None:
+def irc_pixel(rgb, close=False, text=False, nl=False):
+    if rgb is None:
         return '\n'
-    return '\x03{0:02},{0:02}  '.format(irc)
+    return '\x03{0:02},{0:02}  '.format(RGB_TO_IRC[rgb])
+
+def mirc_pixel(rgb, close=False, text=False, nl=False):
+    if rgb is None:
+        return '\n'
+    return '\x03{0:02},{0:02}  '.format(RGB_TO_MIRC[rgb])
 
 def quantize(img, palette):
     """
@@ -193,7 +198,7 @@ def img_to_ansi(filename, output, max_size, alpha, palettes, text=''):
         for y in xrange(height):
             for x in xrange(width):
                 ansi = img.getpixel((x, y))
-                yield output(ansi)
+                yield output(ANSI_TO_RGB[ansi])
             yield output(None, close=True)
         return
     else:
@@ -204,7 +209,7 @@ def img_to_ansi(filename, output, max_size, alpha, palettes, text=''):
         for x in xrange(height):
             for y in xrange(width):
                 rgb = tuple(pixels[x][y])
-                yield output(RGB_TO_ANSI[rgb])
+                yield output(rgb)
             yield output(None, close=True)
 
 def colorcubes(output):
@@ -212,14 +217,14 @@ def colorcubes(output):
     Pretty.
     """
     for rgb in SYSTEM:
-        yield output(RGB_TO_ANSI[rgb], close=True)
+        yield output(rgb, close=True)
     yield output(None)
     for idx, rgb in enumerate(RGB):
-        yield output(RGB_TO_ANSI[rgb], close=True)
+        yield output(rgb, close=True)
         if (idx + 1) % 36 == 0:
             yield output(None)
     for rgb in GREYSCALE:
-        yield output(RGB_TO_ANSI[rgb], close=True)
+        yield output(rgb, close=True)
     yield output(None)
 
 def ansicubes(ansis, output):
@@ -228,7 +233,7 @@ def ansicubes(ansis, output):
     """
     for ansi in ansis:
         yield output(
-            ansi,
+            ANSI_TO_RGB[ansi],
             close=True,
             text='{0:02} {1} {2}'.format(
                 ansi, ANSI_TO_RGB[ansi], ANSI_TO_HEX[ansi],
@@ -270,6 +275,8 @@ if __name__ == '__main__':
     outputs = {
         'ansi': ansi_pixel,
         'html': html_pixel,
+        'irc': irc_pixel,
+        'mirc': mirc_pixel,
     }
 
     parser = argparse.ArgumentParser(description=__doc__)
