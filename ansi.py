@@ -185,22 +185,18 @@ def img_to_ansi(filename, output, max_size, alpha, palettes, text=''):
     img, width, height = prepare_img(filename, max_size, text)
 
     bands = img.getbands()
-    if bands == ('R', 'G', 'B'):
-        # RGB is all set
-        pass
-    elif bands == ('R', 'G', 'B', 'A'):
+    if bands == ('P',):
+        # convert to RGBA so we get alpha
+        bands = ('R', 'G', 'B', 'A')
+        img = img.convert(''.join(bands))
+    if bands == ('R', 'G', 'B', 'A'):
         # convert RGBA to RGB
         img2 = Image.new('RGB', (width, height), (alpha, alpha, alpha))
         img2.paste(img, mask=img.split()[3]) # 3 is the alpha channel
         img = img2
-    elif bands == ('P',):
-        # Needs work
-        for y in xrange(height):
-            for x in xrange(width):
-                ansi = img.getpixel((x, y))
-                yield output(ANSI_TO_RGB[ansi])
-            yield output(None, close=True)
-        return
+    elif bands == ('R', 'G', 'B'):
+        # RGB is all set
+        pass
     else:
         raise Exception('Weird image bands: {0}'.format(bands))
 
