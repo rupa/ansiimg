@@ -174,9 +174,12 @@ def prepare_img(filename, max_size, text=''):
     fontsize = int(width / 10.0) + 1
     fontrgba = (0, 0, 0, 0)
     para = wrap(text, width=8)
-    font = ImageFont.truetype(
-        os.path.join(module_path, 'Impact.ttf'), fontsize
-    )
+    try:
+        font = ImageFont.truetype(
+            os.path.join(module_path, 'Impact.ttf'), fontsize
+        )
+    except IOError:
+        font = ImageFont.load_default()
 
     current_h, pad = 0, 0 # (height - 2 * fontsize)
     for line in para:
