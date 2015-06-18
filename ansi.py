@@ -168,7 +168,7 @@ def prepare_img(filename, max_size, text=''):
     width, height = img.size
 
     draw = ImageDraw.Draw(img)
-    fontsize = int(width / 5.0) + 1
+    fontsize = int(width / 10.0) + 1
     fontrgba = (0, 0, 0, 0)
     para = wrap(text, width=8)
     font = ImageFont.truetype('{0}/Impact.ttf'.format(sys.path[0]), fontsize)
