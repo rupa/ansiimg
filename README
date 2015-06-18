@@ -1,6 +1,8 @@
+/Users/rupa/Documents/dev/ansiimg/ansiimg
 usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
-               [-o {ansi,html}] [-p {16,216,256,bw,grayscale,greyscale}]
-               [-t TEXT] [-w WIDTH]
+               [-o {ansi,html,irc,mirc}]
+               [-p {16,216,256,bw,grayscale,greyscale,irc,mirc}] [-t TEXT]
+               [-w WIDTH]
                [file [file ...]]
 
 Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
@@ -15,8 +17,8 @@ optional arguments:
   --ansi [COLOR [COLOR ...]]
                         info for ANSI color (0-255)
   --colors              color cubes
-  -o {ansi,html}, --output {ansi,html}
-  -p {16,216,256,bw,grayscale,greyscale}, --palette {16,216,256,bw,grayscale,greyscale}
+  -o {ansi,html,irc,mirc}, --output {ansi,html,irc,mirc}
+  -p {16,216,256,bw,grayscale,greyscale,irc,mirc}, --palette {16,216,256,bw,grayscale,greyscale,irc,mirc}
                         palette(s) to use
   -t TEXT, --text TEXT  (short) text to overlay
   -w WIDTH, --width WIDTH

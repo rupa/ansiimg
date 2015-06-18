@@ -349,3 +349,7 @@ def main():
         sys.stdout.close()
     except IOError:
         pass
+
+if __name__ == '__main__':
+    print module_path
+    main()
