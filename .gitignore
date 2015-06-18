@@ -1,0 +1,4 @@
+*.pyc
+dist
+ansiimg.egg-info
+Impact.ttf

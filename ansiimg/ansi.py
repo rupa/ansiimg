@@ -5,6 +5,7 @@ Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
 Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
 """
 
+import os
 import sys
 
 from itertools import product
@@ -13,6 +14,8 @@ from textwrap import wrap
 from numpy import array, reshape
 from PIL import Image, ImageFont, ImageDraw
 from scipy.cluster.vq import vq
+
+module_path = os.path.dirname(os.path.abspath(__file__))
 
 # 16 colors
 SYSTEM = [
@@ -171,7 +174,9 @@ def prepare_img(filename, max_size, text=''):
     fontsize = int(width / 10.0) + 1
     fontrgba = (0, 0, 0, 0)
     para = wrap(text, width=8)
-    font = ImageFont.truetype('{0}/Impact.ttf'.format(sys.path[0]), fontsize)
+    font = ImageFont.truetype(
+        os.path.join(module_path, 'Impact.ttf'), fontsize
+    )
 
     current_h, pad = 0, 0 # (height - 2 * fontsize)
     for line in para:
@@ -247,7 +252,7 @@ def ansifiles(filenames, output, max_size, alpha, palettes, text=''):
         ):
             yield char
 
-if __name__ == '__main__':
+def main():
     import argparse
     import os
     import struct
