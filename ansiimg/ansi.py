@@ -162,6 +162,17 @@ def quantize(img, palette):
     # reshape back to image
     return palette[reshape(qnt, (height, width))]
 
+def extract_frames(filename):
+    frame = Image.open(filename)
+    n = 0
+    while True:
+        try:
+            frame.seek(n)
+        except EOFError:
+            return
+        yield frame
+        n += 1
+
 def prepare_img(filename, max_size, text=''):
     """
     Shrink image and/or add text
@@ -250,10 +261,14 @@ def ansifiles(filenames, output, max_size, alpha, palettes, text=''):
     Pretty (image) files.
     """
     for filename in filenames:
-        for char in img_to_ansi(
+        chars = img_to_ansi(
             filename, output, max_size, alpha, palettes, text
-        ):
-            yield char
+        )
+        try:
+            for char in chars:
+                yield char
+        except IOError as ex:
+            yield '{0}\n'.format(ex.message)
 
 def main():
     import argparse
@@ -354,5 +369,4 @@ def main():
         pass
 
 if __name__ == '__main__':
-    print module_path
     main()
