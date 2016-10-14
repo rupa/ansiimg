@@ -1,4 +1,3 @@
-/Users/rupa/Documents/dev/ansiimg/ansiimg
 usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
                [-o {ansi,html,irc,mirc}]
                [-p {16,216,256,bw,grayscale,greyscale,irc,mirc}] [-t TEXT]
@@ -6,7 +5,7 @@ usage: ansi.py [-h] [--alpha ALPHA] [--ansi [COLOR [COLOR ...]]] [--colors]
                [file [file ...]]
 
 Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
-Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
+Demo: curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi
 
 positional arguments:
   file                  image files

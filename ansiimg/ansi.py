@@ -2,7 +2,7 @@
 """
 Images in B/W, Greyscale, 16, 216, and 256 ANSI colors, delivered to STDOUT.
 
-Demo: `curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi`
+Demo: curl https://raw.githubusercontent.com/rupa/ansiimg/master/demo.ansi
 """
 
 import os
