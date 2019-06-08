@@ -280,10 +280,10 @@ def main():
     def terminal_size(fd=1):
         try:
             return struct.unpack('hh', ioctl(fd, TIOCGWINSZ, '1234'))
-        except:
+        except Exception:
             try:
                 return (os.environ['LINES'], os.environ['COLUMNS'])
-            except:
+            except Exception:
                 return (25, 80)
 
     def valid_ansi(arg):
@@ -367,6 +367,7 @@ def main():
         sys.stdout.close()
     except IOError:
         pass
+
 
 if __name__ == '__main__':
     main()
