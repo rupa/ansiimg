@@ -221,8 +221,8 @@ def img_to_ansi(filename, output, max_size, alpha, palettes, text=''):
 
     for palette in palettes:
         pixels = quantize(img, palette)
-        for x in xrange(height):
-            for y in xrange(width):
+        for x in range(height):
+            for y in range(width):
                 rgb = tuple(pixels[x][y])
                 yield output(rgb)
             yield output(None, close=True)
@@ -349,7 +349,7 @@ def main():
             sys.stdout.write(x)
     elif args.files:
         # divide width by 2 as each char is 2x1px, make height huge
-        max_size = (args.width / 2, sys.maxint)
+        max_size = (args.width / 2, sys.maxsize)
         for x in ansifiles(
             args.files,
             output,
